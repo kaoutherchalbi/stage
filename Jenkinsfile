@@ -7,7 +7,6 @@ node {
 
     stage('Initialize'){
         def dockerHome = tool 'myDocker'
-        def mavenHome  = tool 'myMaven'
         env.PATH = "${dockerHome}/bin:${mavenHome}/bin:${env.PATH}"
     }
 
@@ -27,9 +26,7 @@ node {
         }
      }
 
-    stage("Image Prune"){
-        imagePrune(CONTAINER_NAME)
-    }
+
 
     stage('Image Build'){
         imageBuild(CONTAINER_NAME, CONTAINER_TAG)
@@ -47,12 +44,7 @@ node {
 
 }
 
-def imagePrune(containerName){
-    try {
-        sh "docker image prune -f"
-        sh "docker stop $containerName"
-    } catch(error){}
-}
+
 
 def imageBuild(containerName, tag){
     sh "docker build -t $containerName:$tag  -t $containerName --pull --no-cache ."
